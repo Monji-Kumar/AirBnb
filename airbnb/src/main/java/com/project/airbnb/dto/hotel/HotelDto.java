@@ -1,53 +1,40 @@
-package com.project.airbnb.entity.hotel;
+package com.project.airbnb.dto.hotel;
 
 import com.project.airbnb.entity.contactinfo.ContactInfo;
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
-public class Hotel {
+public class HotelDto {
 
-    @Id
-    @GeneratedValue(generator = "hotel_seq_gen", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(initialValue = 1, allocationSize = 1, name = "hotel_seq_gen", sequenceName = "hotel_seq")
     private Long id;
 
-    @Column(name = "hotel_name")
     private String hotelName;
 
-    @Column(name = "city")
     private String city;
 
-    @Embedded
     private ContactInfo contactInfo;
 
-    @Column(name = "photoes", columnDefinition = "TEXT[]")
     private List<String> photoes;
 
-    @CreationTimestamp
-    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    @Column(name = "last_updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "amenities", columnDefinition = "TEXT[]")
     private List<String> amenities;
 
-    @Column(name = "is_active", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean isActive;
+
+    public Long getId() {
+        return id;
+    }
 
     public String getCity() {
         return city;
     }
 
-    public Long getId() {
-        return id;
+    public ContactInfo getContactInfo() {
+        return contactInfo;
     }
 
     public List<String> getPhotoes() {
@@ -78,6 +65,10 @@ public class Hotel {
         this.city = city;
     }
 
+    public void setContactInfo(ContactInfo contactInfo) {
+        this.contactInfo = contactInfo;
+    }
+
     public void setPhotoes(List<String> photoes) {
         this.photoes = photoes;
     }
@@ -96,14 +87,6 @@ public class Hotel {
 
     public void setActive(Boolean active) {
         isActive = active;
-    }
-
-    public ContactInfo getContactInfo() {
-        return contactInfo;
-    }
-
-    public void setContactInfo(ContactInfo contactInfo) {
-        this.contactInfo = contactInfo;
     }
 
     public String getHotelName() {
