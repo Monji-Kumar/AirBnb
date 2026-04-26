@@ -77,8 +77,18 @@ public class HotelServiceImpl implements HotelService {
         log.info("Deleting the Hotel with ID - " + id + " with name - " + hotel.getHotelName());
         hotelRepository.delete(hotel);
 
-        //delete inventories of hotel as well
+        //TODO:delete inventories of hotel as well
 
+        return true;
+    }
+
+    @Override
+    public Boolean activateHotel(Long id, Boolean activate) {
+        Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Hotel Found with the given ID - " + id));
+        log.info((activate ? "Activated " : "De-Activated ") + " Hotel with ID - " + id + " and name - " + hotel.getHotelName());
+        hotel.setIsActive(activate);
+        // TODO: Create inventory of Hotel
+        saveHotel(hotel);
         return true;
     }
 }

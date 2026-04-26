@@ -10,8 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
-@RequestMapping(value = "/admin/hotel")
+@RequestMapping(value = "/admin/hotels")
 @Slf4j
 @RequiredArgsConstructor
 public class HotelController {
@@ -45,5 +47,10 @@ public class HotelController {
     @DeleteMapping(value = "delete-hotel")
     public ResponseEntity<?> deleteHotelById(@RequestParam(value = "id") Long id) {
         return new ResponseEntity<>(hotelService.deleteHotelById(id), HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping(value ="activate-deactivate-hotel")
+    public ResponseEntity<?> activateHotel(@RequestParam(value = "id") Long id, @RequestBody Map<String, Object> requestBody) {
+        return new ResponseEntity<>(hotelService.activateHotel(id, (Boolean) requestBody.get("activate")), HttpStatus.ACCEPTED);
     }
 }
