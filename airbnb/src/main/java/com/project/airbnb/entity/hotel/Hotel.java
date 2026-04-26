@@ -1,7 +1,9 @@
 package com.project.airbnb.entity.hotel;
 
 import com.project.airbnb.entity.contactinfo.ContactInfo;
+import com.project.airbnb.entity.user.User;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Data
 public class Hotel {
 
     @Id
@@ -42,75 +45,7 @@ public class Hotel {
     @Column(name = "is_active", columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean isActive;
 
-    public String getCity() {
-        return city;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public List<String> getPhotoes() {
-        return photoes;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public List<String> getAmenities() {
-        return amenities;
-    }
-
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public void setPhotoes(List<String> photoes) {
-        this.photoes = photoes;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public void setAmenities(List<String> amenities) {
-        this.amenities = amenities;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
-
-    public ContactInfo getContactInfo() {
-        return contactInfo;
-    }
-
-    public void setContactInfo(ContactInfo contactInfo) {
-        this.contactInfo = contactInfo;
-    }
-
-    public String getHotelName() {
-        return hotelName;
-    }
-
-    public void setHotelName(String hotelName) {
-        this.hotelName = hotelName;
-    }
+    @ManyToOne()
+    @JoinColumn(name = "owner")
+    private User owner;
 }

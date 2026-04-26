@@ -3,34 +3,37 @@ package com.project.airbnb.service.hotel;
 import com.project.airbnb.dto.hotel.HotelDto;
 import com.project.airbnb.entity.hotel.Hotel;
 import com.project.airbnb.entity.hotel.HotelRepository;
+import com.project.airbnb.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Service
 public class HotelServiceImpl implements HotelService {
 
-    private static final Logger log = LoggerFactory.getLogger(HotelServiceImpl.class);
     private final HotelRepository hotelRepository;
+    private final ModelMapper modelMapper;
 
-    public HotelServiceImpl(HotelRepository hotelRepository) {
+    public HotelServiceImpl(HotelRepository hotelRepository, ModelMapper modelMapper) {
         this.hotelRepository = hotelRepository;
+        this.modelMapper = modelMapper;
+    }
+
+    @Override
+    public Hotel saveHotel(Hotel hotel) {
+        return hotelRepository.save(hotel);
     }
 
     @Override
     public HotelDto createNewHotel(HotelDto dto) {
         Hotel hotel = new Hotel();
-        hotel.setHotelName(dto.getHotelName());
-        hotel.setActive(true);
-        hotel.setCity(dto.getCity());
-        hotel.setAmenities(dto.getAmenities());
-        hotel.setContactInfo(dto.getContactInfo());
-        hotel.setPhotoes(dto.getPhotoes());
-        hotel = hotelRepository.save(hotel);
+        hotel = modelMapper.map(dto, Hotel.class);
+        hotel.setIsActive(false);
+        saveHotel(hotel);
         log.info("new Hotel Creation started - " + dto.getHotelName());
         return getHotelDtoFromHotel(hotel);
     }
@@ -39,24 +42,43 @@ public class HotelServiceImpl implements HotelService {
     public HotelDto getHotelById(Long id) {
         Optional<Hotel> hotelOpt = hotelRepository.findById(id);
         if(hotelOpt.isEmpty()) {
-            throw new RuntimeException("No Hotel found with the given ID - " + id);
+            throw new ResourceNotFoundException("No Hotel found with the given ID - " + id);
         }
 
-        log.info("new Hotel Creation started - " + hotelOpt.get().getHotelName());
+        log.info("Getting Hotel with ID - " + id + " with name - " + hotelOpt.get().getHotelName());
         return getHotelDtoFromHotel(hotelOpt.get());
+    }
+
+    @Override
+    public List<HotelDto> getAllHotels() {
+        List<Hotel> hotelList = hotelRepository.findAll();
+        return hotelList.stream().map(this::getHotelDtoFromHotel).toList();
     }
 
     private HotelDto getHotelDtoFromHotel(Hotel hotel) {
         HotelDto dto = new HotelDto();
-        dto.setHotelName(hotel.getHotelName());
-        dto.setActive(hotel.getActive());
-        dto.setCity(hotel.getCity());
-        dto.setAmenities(hotel.getAmenities());
-        dto.setContactInfo(hotel.getContactInfo());
-        dto.setPhotoes(hotel.getPhotoes());
-        dto.setId(hotel.getId());
-        dto.setCreatedAt(hotel.getCreatedAt());
-        dto.setUpdatedAt(hotel.getUpdatedAt());
+        dto = modelMapper.map(hotel, HotelDto.class);
         return dto;
+    }
+
+    @Override
+    public HotelDto updateHotelById(Long id, HotelDto hotelDto) {
+        Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Hotel Found with the give ID - " + id));
+        log.info("Updating the Hotel with ID - " + id + " with name - " + hotel.getHotelName());
+        modelMapper.map(hotelDto, hotel);
+        hotel.setId(id);
+        hotel = saveHotel(hotel);
+        return modelMapper.map(hotel, HotelDto.class);
+    }
+
+    @Override
+    public Boolean deleteHotelById(Long id) {
+        Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Hotel Found with the give ID - " + id));
+        log.info("Deleting the Hotel with ID - " + id + " with name - " + hotel.getHotelName());
+        hotelRepository.delete(hotel);
+
+        //delete inventories of hotel as well
+
+        return true;
     }
 }
