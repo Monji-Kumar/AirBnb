@@ -5,6 +5,7 @@ import com.project.airbnb.dto.hotel.HotelDto;
 import com.project.airbnb.entity.hotel.Hotel;
 import com.project.airbnb.entity.hotel.HotelRepository;
 import com.project.airbnb.exception.ResourceNotFoundException;
+import com.project.airbnb.service.inventory.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -20,6 +21,7 @@ public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
     private final MapperConfig mapperConfig;
+    private final InventoryService inventoryService;
 
     @Override
     public Hotel saveHotel(Hotel hotel) {
@@ -76,7 +78,7 @@ public class HotelServiceImpl implements HotelService {
         hotelRepository.delete(hotel);
 
         //TODO:delete inventories of hotel as well
-
+        hotel.getRooms().forEach(inventoryService::deleteFutureInventories);
         return true;
     }
 
@@ -97,6 +99,9 @@ public class HotelServiceImpl implements HotelService {
         hotel.setIsActive(activate);
         // TODO: Create inventory of Hotel
         saveHotel(hotel);
+
+        //First time activation of hotel
+        hotel.getRooms().forEach(inventoryService::initializeRoomForAYear);
         return true;
     }
 

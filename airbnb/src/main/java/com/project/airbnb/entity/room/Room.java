@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class Room {
     private String type;
 
     @Column(name = "base_price", columnDefinition = "DOUBLE PRECISION")
-    private Double basePrice;
+    private BigDecimal basePrice;
 
     @CreationTimestamp
     @Column(name = "created_at")
