@@ -1,9 +1,11 @@
 package com.project.airbnb.service.hotel;
 
+import com.project.airbnb.config.modelmapper.MapperConfig;
 import com.project.airbnb.dto.hotel.HotelDto;
 import com.project.airbnb.entity.hotel.Hotel;
 import com.project.airbnb.entity.hotel.HotelRepository;
 import com.project.airbnb.exception.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -13,15 +15,11 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
-    private final ModelMapper modelMapper;
-
-    public HotelServiceImpl(HotelRepository hotelRepository, ModelMapper modelMapper) {
-        this.hotelRepository = hotelRepository;
-        this.modelMapper = modelMapper;
-    }
+    private final MapperConfig mapperConfig;
 
     @Override
     public Hotel saveHotel(Hotel hotel) {
@@ -31,7 +29,7 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public HotelDto createNewHotel(HotelDto dto) {
         Hotel hotel = new Hotel();
-        hotel = modelMapper.map(dto, Hotel.class);
+        hotel = mapperConfig.modelMapper().map(dto, Hotel.class);
         hotel.setIsActive(false);
         saveHotel(hotel);
         log.info("new Hotel Creation started - " + dto.getHotelName());
@@ -57,7 +55,7 @@ public class HotelServiceImpl implements HotelService {
 
     private HotelDto getHotelDtoFromHotel(Hotel hotel) {
         HotelDto dto = new HotelDto();
-        dto = modelMapper.map(hotel, HotelDto.class);
+        dto = mapperConfig.modelMapper().map(hotel, HotelDto.class);
         return dto;
     }
 
@@ -65,10 +63,10 @@ public class HotelServiceImpl implements HotelService {
     public HotelDto updateHotelById(Long id, HotelDto hotelDto) {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Hotel Found with the give ID - " + id));
         log.info("Updating the Hotel with ID - " + id + " with name - " + hotel.getHotelName());
-        modelMapper.map(hotelDto, hotel);
+        mapperConfig.modelMapper().map(hotelDto, hotel);
         hotel.setId(id);
         hotel = saveHotel(hotel);
-        return modelMapper.map(hotel, HotelDto.class);
+        return mapperConfig.modelMapper().map(hotel, HotelDto.class);
     }
 
     @Override
@@ -83,6 +81,16 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
+    public Hotel findHotelById(Long id) {
+        return hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Hotel Found with the given ID -" + id));
+    }
+
+    @Override
+    public Boolean hotelExistsById(Long id) {
+        return hotelRepository.existsById(id);
+    }
+
+    @Override
     public Boolean activateHotel(Long id, Boolean activate) {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Hotel Found with the given ID - " + id));
         log.info((activate ? "Activated " : "De-Activated ") + " Hotel with ID - " + id + " and name - " + hotel.getHotelName());
@@ -90,5 +98,10 @@ public class HotelServiceImpl implements HotelService {
         // TODO: Create inventory of Hotel
         saveHotel(hotel);
         return true;
+    }
+
+    @Override
+    public Boolean existsByService(Long id) {
+        return hotelRepository.existsById(id);
     }
 }

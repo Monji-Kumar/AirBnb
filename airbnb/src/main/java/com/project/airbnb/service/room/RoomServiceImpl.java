@@ -2,9 +2,13 @@ package com.project.airbnb.service.room;
 
 import com.project.airbnb.config.modelmapper.MapperConfig;
 import com.project.airbnb.dto.room.RoomDto;
+import com.project.airbnb.entity.hotel.Hotel;
+import com.project.airbnb.entity.hotel.HotelRepository;
 import com.project.airbnb.entity.room.Room;
 import com.project.airbnb.entity.room.RoomRepository;
+import com.project.airbnb.enums.BookingStatus;
 import com.project.airbnb.exception.ResourceNotFoundException;
+import com.project.airbnb.service.hotel.HotelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,8 @@ public class RoomServiceImpl implements RoomService{
 
     public final MapperConfig mapperConfig;
 
+    public final HotelService hotelService;
+
     @Override
     public RoomDto getRoomById(Long id) {
         Room room = roomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Room found with the given ID - " + id));
@@ -27,9 +33,13 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
-    public RoomDto createNewRoom(RoomDto roomDto) {
+    public RoomDto createNewRoom(Long hotelId, RoomDto roomDto) {
+        Hotel hotel = hotelService.findHotelById(hotelId);
+        roomDto.setHotel(hotel);
         Room room = mapperConfig.modelMapper().map(roomDto, Room.class);
         room = saveRoom(room);
+
+        //TODO: create inventory
         return mapperConfig.modelMapper().map(room, RoomDto.class);
     }
 
@@ -55,8 +65,18 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
-    public Boolean updateStatusOfRoomById(Long id) {
-        return null;
+    public Boolean updateStatusOfRoomById(Long id, String status) {
+        Room room = roomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Room found with the given ID - " + id));
+        BookingStatus bookingStatus = BookingStatus.valueOf(status.toUpperCase());
+        room.setStatus(bookingStatus);
+        roomRepository.save(room);
+        return true;
+    }
+
+    @Override
+    public List<RoomDto> getAllRoomsInHotel(Long hotelId) {
+        List<Room> rooms = roomRepository.findAllByHotelId(hotelId);
+        return rooms.stream().map(this::getRoomDtoByRoom).toList();
     }
 
     private RoomDto getRoomDtoByRoom(Room room) {

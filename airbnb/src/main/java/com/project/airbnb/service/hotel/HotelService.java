@@ -19,5 +19,11 @@ public interface HotelService {
 
     Boolean deleteHotelById(Long id);
 
+    Hotel findHotelById(Long id);
+
+    Boolean hotelExistsById(Long id);
+
     Boolean activateHotel(Long id, Boolean activte);
+
+    Boolean existsByService(Long id);
 }

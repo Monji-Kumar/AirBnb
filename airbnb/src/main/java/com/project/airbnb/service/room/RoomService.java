@@ -8,7 +8,7 @@ import java.util.List;
 public interface RoomService {
     RoomDto getRoomById(Long id);
 
-    RoomDto createNewRoom(RoomDto roomDto);
+    RoomDto createNewRoom(Long hotelId, RoomDto roomDto);
 
     Room saveRoom(Room room);
 
@@ -16,5 +16,7 @@ public interface RoomService {
 
     Boolean deleteRoomById(Long id);
 
-    Boolean updateStatusOfRoomById(Long id);
+    Boolean updateStatusOfRoomById(Long id, String status);
+
+    List<RoomDto> getAllRoomsInHotel(Long hotelId);
 }

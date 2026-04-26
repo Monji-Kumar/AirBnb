@@ -1,6 +1,7 @@
 package com.project.airbnb.dto.room;
 
 import com.project.airbnb.entity.hotel.Hotel;
+import com.project.airbnb.enums.BookingStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,5 +35,5 @@ public class RoomDto {
 
     private Integer capacity;
 
-    private Integer status;
+    private BookingStatus status;
 }

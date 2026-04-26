@@ -3,5 +3,6 @@ package com.project.airbnb.enums;
 public enum BookingStatus {
     RESERVED,
     BOOKED,
-    OPEN;
+    OPEN,
+    SERVICE_REQ;
 }

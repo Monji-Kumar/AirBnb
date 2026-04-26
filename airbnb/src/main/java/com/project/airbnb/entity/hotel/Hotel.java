@@ -1,6 +1,8 @@
 package com.project.airbnb.entity.hotel;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.airbnb.entity.contactinfo.ContactInfo;
+import com.project.airbnb.entity.room.Room;
 import com.project.airbnb.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -48,4 +50,8 @@ public class Hotel {
     @ManyToOne()
     @JoinColumn(name = "owner")
     private User owner;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "hotel")
+    private List<Room> rooms;
 }

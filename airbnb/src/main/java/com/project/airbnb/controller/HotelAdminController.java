@@ -16,7 +16,7 @@ import java.util.Map;
 @RequestMapping(value = "/admin/hotels")
 @Slf4j
 @RequiredArgsConstructor
-public class HotelController {
+public class HotelAdminController {
 
     public final HotelService hotelService;
 
