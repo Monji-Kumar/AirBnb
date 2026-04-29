@@ -10,8 +10,10 @@ import com.project.airbnb.enums.BookingStatus;
 import com.project.airbnb.exception.ResourceNotFoundException;
 import com.project.airbnb.service.hotel.HotelService;
 import com.project.airbnb.service.inventory.InventoryService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +37,7 @@ public class RoomServiceImpl implements RoomService{
         return mapperConfig.modelMapper().map(room, RoomDto.class);
     }
 
+    @Transactional(rollbackOn = Throwable.class)
     @Override
     public RoomDto createNewRoom(Long hotelId, RoomDto roomDto) {
         Hotel hotel = hotelService.findHotelById(hotelId);
@@ -60,6 +63,7 @@ public class RoomServiceImpl implements RoomService{
         return roomList.stream().map(this::getRoomDtoByRoom).toList();
     }
 
+    @Transactional(rollbackOn = Throwable.class)
     @Override
     public Boolean deleteRoomById(Long id) {
         boolean exists = roomRepository.existsById(id);
@@ -67,8 +71,10 @@ public class RoomServiceImpl implements RoomService{
             throw new ResourceNotFoundException("No Room exists with the given ID - " + id);
         }
 
-        //TODO: delete future Inventories of the room
+        //Delete Inventories
         inventoryService.deleteFutureInventories(roomRepository.findById(id).get());
+
+        //Delete Room
         roomRepository.deleteById(id);
         return true;
     }

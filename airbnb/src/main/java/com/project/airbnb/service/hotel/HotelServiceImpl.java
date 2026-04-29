@@ -6,6 +6,7 @@ import com.project.airbnb.entity.hotel.Hotel;
 import com.project.airbnb.entity.hotel.HotelRepository;
 import com.project.airbnb.exception.ResourceNotFoundException;
 import com.project.airbnb.service.inventory.InventoryService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -71,6 +72,7 @@ public class HotelServiceImpl implements HotelService {
         return mapperConfig.modelMapper().map(hotel, HotelDto.class);
     }
 
+    @Transactional(rollbackOn = Throwable.class)
     @Override
     public Boolean deleteHotelById(Long id) {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Hotel Found with the give ID - " + id));
@@ -92,6 +94,7 @@ public class HotelServiceImpl implements HotelService {
         return hotelRepository.existsById(id);
     }
 
+    @Transactional(rollbackOn = Throwable.class)
     @Override
     public Boolean activateHotel(Long id, Boolean activate) {
         Hotel hotel = hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Hotel Found with the given ID - " + id));
