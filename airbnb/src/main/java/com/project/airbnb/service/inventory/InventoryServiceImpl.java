@@ -43,4 +43,9 @@ public class InventoryServiceImpl implements InventoryService {
         LocalDate today = LocalDate.now();
         inventoryRepository.deleteByDateAfterAndRoom(today, room);
     }
+
+    @Override
+    public void deleteAllInventories(Room room) {
+        inventoryRepository.deleteByRoom(room);
+    }
 }

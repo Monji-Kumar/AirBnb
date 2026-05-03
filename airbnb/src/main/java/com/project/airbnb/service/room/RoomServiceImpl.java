@@ -72,7 +72,7 @@ public class RoomServiceImpl implements RoomService{
         }
 
         //Delete Inventories
-        inventoryService.deleteFutureInventories(roomRepository.findById(id).get());
+        inventoryService.deleteAllInventories(roomRepository.findById(id).get());
 
         //Delete Room
         roomRepository.deleteById(id);

@@ -80,7 +80,7 @@ public class HotelServiceImpl implements HotelService {
         hotelRepository.delete(hotel);
 
         //TODO:delete inventories of hotel as well
-        hotel.getRooms().forEach(inventoryService::deleteFutureInventories);
+        hotel.getRooms().forEach(inventoryService::deleteAllInventories);
         return true;
     }
 
