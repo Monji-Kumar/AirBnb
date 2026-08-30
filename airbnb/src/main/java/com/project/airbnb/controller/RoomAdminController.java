@@ -42,5 +42,11 @@ public class RoomAdminController {
         return new ResponseEntity<>(roomService.updateStatusOfRoomById(id, requestBody.get("status")), HttpStatus.ACCEPTED);
     }
 
+    @PostMapping(value = "update-room-inventory")
+    public ResponseEntity<?> updateRoomInventory(@RequestParam(value = "id") Long id) {
+        roomService.updateRoomInventory(id);
+        return new ResponseEntity<>("Room Inventory Initiated Successfully", HttpStatus.ACCEPTED);
+    }
+
 
 }

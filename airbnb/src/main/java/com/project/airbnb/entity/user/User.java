@@ -1,11 +1,20 @@
 package com.project.airbnb.entity.user;
 
+import com.project.airbnb.enums.Role;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
 @Table(name = "users")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -13,8 +22,10 @@ public class User {
     @SequenceGenerator(initialValue = 1, sequenceName = "user_seq", allocationSize = 1, name = "user_seq_gen")
     private Long id;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
     @Column(name = "roles")
-    private List<String> roles;
+    private List<Role> roles;
 
     @Column(name = "name")
     private String name;
@@ -24,44 +35,4 @@ public class User {
 
     @Column(name = "password")
     private String password;
-
-    public Long getId() {
-        return id;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 }

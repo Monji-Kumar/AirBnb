@@ -3,11 +3,20 @@ package com.project.airbnb.entity.guest;
 import com.project.airbnb.entity.user.User;
 import com.project.airbnb.enums.Gender;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "guest")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Guest {
     @Id
     @GeneratedValue(generator = "guest_seq_gen", strategy = GenerationType.SEQUENCE)
@@ -21,49 +30,10 @@ public class Guest {
     @Column(name = "name")
     private String name;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "gender")
     private Gender gender;
-
-    public Long getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
 }

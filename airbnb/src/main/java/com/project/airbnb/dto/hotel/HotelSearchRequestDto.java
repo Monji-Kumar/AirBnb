@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Data
 @RequiredArgsConstructor
-public class HotelRequestDto {
+public class HotelSearchRequestDto {
     private String city;
     private LocalDate startDate;
     private LocalDate endDate;

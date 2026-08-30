@@ -1,17 +1,30 @@
 package com.project.airbnb.entity.booking;
 
+import com.project.airbnb.entity.guest.Guest;
 import com.project.airbnb.entity.hotel.Hotel;
 import com.project.airbnb.entity.payment.Payment;
 import com.project.airbnb.entity.room.Room;
 import com.project.airbnb.entity.user.User;
 import com.project.airbnb.enums.BookingStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "booking")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Booking {
 
     @Id
@@ -31,14 +44,19 @@ public class Booking {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "last_updated_at")
     private LocalDateTime updatedAt;
 
     @Column(name = "status")
     private BookingStatus status;
+
+    @Column(nullable = false)
+    private Integer roomsCount;
 
     @Column(name = "check_in_date")
     private LocalDate checkInDate;
@@ -46,87 +64,18 @@ public class Booking {
     @Column(name = "check_out_date")
     private LocalDate checkOutDate;
 
-    @ManyToOne
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "booking_status")
+    private BookingStatus bookingStatus;
 
-    public Long getId() {
-        return id;
-    }
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "booking_guests",
+            joinColumns = @JoinColumn(name = "booking_id"),
+            inverseJoinColumns = @JoinColumn(name = "guest_id")
+    )
+    private Set<Guest> guests;
 
-    public Hotel getHotel() {
-        return hotel;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public BookingStatus getStatus() {
-        return status;
-    }
-
-    public LocalDate getCheckInDate() {
-        return checkInDate;
-    }
-
-    public LocalDate getCheckOutDate() {
-        return checkOutDate;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setHotel(Hotel hotel) {
-        this.hotel = hotel;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public void setStatus(BookingStatus status) {
-        this.status = status;
-    }
-
-    public void setCheckInDate(LocalDate checkInDate) {
-        this.checkInDate = checkInDate;
-    }
-
-    public void setCheckOutDate(LocalDate checkOutDate) {
-        this.checkOutDate = checkOutDate;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-    }
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal amount;
 }

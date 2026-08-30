@@ -1,12 +1,23 @@
 package com.project.airbnb.entity.payment;
 
+import com.project.airbnb.entity.booking.Booking;
 import com.project.airbnb.enums.PaymentStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "payment")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Payment {
 
     @Id
@@ -20,60 +31,18 @@ public class Payment {
     @Column(name = "price", columnDefinition = "DOUBLE PRECISION")
     private Double price;
 
+    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @Column(name = "status")
     private PaymentStatus status;
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public PaymentStatus getStatus() {
-        return status;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public void setStatus(PaymentStatus status) {
-        this.status = status;
-    }
+    @OneToOne
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
 }

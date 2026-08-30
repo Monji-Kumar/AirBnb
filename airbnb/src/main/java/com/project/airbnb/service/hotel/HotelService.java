@@ -1,6 +1,7 @@
 package com.project.airbnb.service.hotel;
 
 import com.project.airbnb.dto.hotel.HotelDto;
+import com.project.airbnb.dto.hotel.HotelInfoDto;
 import com.project.airbnb.entity.hotel.Hotel;
 
 import java.util.List;
@@ -26,4 +27,6 @@ public interface HotelService {
     Boolean activateHotel(Long id, Boolean activte);
 
     Boolean existsByService(Long id);
+
+    HotelInfoDto getHotelInfoById(Long hotelId);
 }

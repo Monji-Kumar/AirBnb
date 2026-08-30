@@ -19,4 +19,10 @@ public interface RoomService {
     Boolean updateStatusOfRoomById(Long id, String status);
 
     List<RoomDto> getAllRoomsInHotel(Long hotelId);
+
+    void updateRoomInventory(Long id);
+
+    Room findbyId(Long id);
+
+    Room findByHotelIdAndRoomId(Long hotelId, Long roomId);
 }

@@ -3,7 +3,16 @@ package com.project.airbnb.entity.bookingguest;
 import com.project.airbnb.entity.booking.Booking;
 import com.project.airbnb.entity.guest.Guest;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class BookingGuest {
 
     @Id
@@ -18,28 +27,4 @@ public class BookingGuest {
     @ManyToOne
     @JoinColumn(name = "guest_id")
     private Guest guest;
-
-    public Long getId() {
-        return id;
-    }
-
-    public Booking getBooking() {
-        return booking;
-    }
-
-    public Guest getGuest() {
-        return guest;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setBooking(Booking booking) {
-        this.booking = booking;
-    }
-
-    public void setGuest(Guest guest) {
-        this.guest = guest;
-    }
 }

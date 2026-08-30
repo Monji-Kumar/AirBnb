@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "inventory")
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -56,6 +57,9 @@ public class Inventory {
 
     @Column(name = "booked_count", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private Integer bookedCount;
+
+    @Column(name = "reserved_count", nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    private Integer reservedCount;
 
     @Column(name = "price", nullable = false, precision = 10, scale = 2)
     private BigDecimal price;

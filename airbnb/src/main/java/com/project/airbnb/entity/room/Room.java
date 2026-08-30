@@ -3,8 +3,7 @@ package com.project.airbnb.entity.room;
 import com.project.airbnb.entity.hotel.Hotel;
 import com.project.airbnb.enums.BookingStatus;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,6 +14,9 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "room")
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Room {
 
     @Id

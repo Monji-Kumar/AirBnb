@@ -5,7 +5,10 @@ import com.project.airbnb.entity.contactinfo.ContactInfo;
 import com.project.airbnb.entity.room.Room;
 import com.project.airbnb.entity.user.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,6 +17,9 @@ import java.util.List;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Hotel {
 
     @Id

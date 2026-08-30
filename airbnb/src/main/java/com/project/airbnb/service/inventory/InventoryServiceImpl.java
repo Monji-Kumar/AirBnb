@@ -2,7 +2,7 @@ package com.project.airbnb.service.inventory;
 
 import com.project.airbnb.config.modelmapper.MapperConfig;
 import com.project.airbnb.dto.hotel.HotelDto;
-import com.project.airbnb.dto.hotel.HotelRequestDto;
+import com.project.airbnb.dto.hotel.HotelSearchRequestDto;
 import com.project.airbnb.entity.hotel.Hotel;
 import com.project.airbnb.entity.inventory.Inventory;
 import com.project.airbnb.entity.inventory.InventoryRepository;
@@ -34,12 +34,14 @@ public class InventoryServiceImpl implements InventoryService {
             Inventory inventory = Inventory.builder()
                     .hotel(room.getHotel())
                     .room(room)
+                    .bookedCount(0)
+                    .reservedCount(0)
                     .city(room.getHotel().getCity())
                     .price(room.getBasePrice())
                     .surgeFactor(BigDecimal.ONE)
                     .totalCount(room.getTotalCount())
                     .closed(false)
-                    .date(LocalDate.now())
+                    .date(today)
                     .build();
 
             inventoryRepository.save(inventory);
@@ -59,7 +61,7 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public Page<HotelDto> searchHotels(HotelRequestDto dto) {
+    public Page<HotelDto> searchHotels(HotelSearchRequestDto dto) {
         Pageable pageable = PageRequest.of(dto.getPage(), dto.getPageSize());
 
         long dateCount = ChronoUnit.DAYS.between(dto.getStartDate(), dto.getEndDate()) + 1;

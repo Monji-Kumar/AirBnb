@@ -3,7 +3,6 @@ package com.project.airbnb.service.room;
 import com.project.airbnb.config.modelmapper.MapperConfig;
 import com.project.airbnb.dto.room.RoomDto;
 import com.project.airbnb.entity.hotel.Hotel;
-import com.project.airbnb.entity.hotel.HotelRepository;
 import com.project.airbnb.entity.room.Room;
 import com.project.airbnb.entity.room.RoomRepository;
 import com.project.airbnb.enums.BookingStatus;
@@ -13,7 +12,6 @@ import com.project.airbnb.service.inventory.InventoryService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -94,7 +92,23 @@ public class RoomServiceImpl implements RoomService{
         return rooms.stream().map(this::getRoomDtoByRoom).toList();
     }
 
+    @Override
+    public void updateRoomInventory(Long id) {
+        Room room = roomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Room found with the given ID - " + id));
+        inventoryService.initializeRoomForAYear(room);
+    }
+
     private RoomDto getRoomDtoByRoom(Room room) {
         return mapperConfig.modelMapper().map(room, RoomDto.class);
+    }
+
+    @Override
+    public Room findbyId(Long id) {
+        return roomRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Room found with the given ID - " + id));
+    }
+
+    @Override
+    public Room findByHotelIdAndRoomId(Long hotelId, Long roomId) {
+        return roomRepository.findByHotelIdAndId(hotelId, roomId).orElseThrow(() -> new ResourceNotFoundException("No Room found with the given HotelId - "+ hotelId +" and room ID - " + roomId));
     }
 }
