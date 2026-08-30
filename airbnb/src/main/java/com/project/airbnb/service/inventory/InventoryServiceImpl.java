@@ -2,8 +2,11 @@ package com.project.airbnb.service.inventory;
 
 import com.project.airbnb.config.modelmapper.MapperConfig;
 import com.project.airbnb.dto.hotel.HotelDto;
+import com.project.airbnb.dto.hotel.HotelPriceDto;
 import com.project.airbnb.dto.hotel.HotelSearchRequestDto;
 import com.project.airbnb.entity.hotel.Hotel;
+import com.project.airbnb.entity.hotel.hotelminprice.HotelMinPrice;
+import com.project.airbnb.entity.hotel.hotelminprice.HotelMinPriceRepository;
 import com.project.airbnb.entity.inventory.Inventory;
 import com.project.airbnb.entity.inventory.InventoryRepository;
 import com.project.airbnb.entity.room.Room;
@@ -24,6 +27,7 @@ import java.time.temporal.ChronoUnit;
 @Slf4j
 public class InventoryServiceImpl implements InventoryService {
     private final InventoryRepository inventoryRepository;
+    private final HotelMinPriceRepository hotelMinPriceRepository;
     private final MapperConfig mapperConfig;
 
     @Override
@@ -61,13 +65,20 @@ public class InventoryServiceImpl implements InventoryService {
     }
 
     @Override
-    public Page<HotelDto> searchHotels(HotelSearchRequestDto dto) {
+    public Page<?> searchHotels(HotelSearchRequestDto dto) {
         Pageable pageable = PageRequest.of(dto.getPage(), dto.getPageSize());
 
         long dateCount = ChronoUnit.DAYS.between(dto.getStartDate(), dto.getEndDate()) + 1;
-        Page<Hotel> hotels = inventoryRepository.findHotelsWithAvailableInventory(dto.getCity(), dto.getStartDate(), dto.getEndDate(),
-                dto.getRoomCount(), dateCount, pageable);
 
-        return hotels.map((element) -> mapperConfig.modelMapper().map(element, HotelDto.class));
+        //first 90 days
+        LocalDate today = LocalDate.now();
+        if(dto.getStartDate().isAfter(today.plusDays(90))) {
+            return hotelMinPriceRepository.findHotelsWithAvailableInventory(dto.getCity(), dto.getStartDate(), dto.getEndDate(), pageable);
+        } else {
+            Page<Hotel> hotels = inventoryRepository.findHotelsWithAvailableInventory(dto.getCity(), dto.getStartDate(), dto.getEndDate(),dto.getRoomCount(),dateCount, pageable);
+            return hotels.map((element) -> mapperConfig.modelMapper().map(element, HotelDto.class));
+        }
+
+
     }
 }

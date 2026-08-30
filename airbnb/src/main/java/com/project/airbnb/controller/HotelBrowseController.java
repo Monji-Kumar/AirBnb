@@ -26,8 +26,8 @@ public class HotelBrowseController {
 
     @GetMapping(value = "/search")
     public ResponseEntity<?> searchHotels(@RequestBody HotelSearchRequestDto dto) {
-        Page<HotelDto> hotels = inventoryService.searchHotels(dto);
-        return new ResponseEntity<>(new ApiResponse<>(hotels), HttpStatus.OK);
+        var page = inventoryService.searchHotels(dto);
+        return new ResponseEntity<>(new ApiResponse<>(page), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{hotelId}/info")

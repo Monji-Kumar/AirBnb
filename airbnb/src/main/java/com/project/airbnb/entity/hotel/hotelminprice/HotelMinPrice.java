@@ -1,5 +1,6 @@
-package com.project.airbnb.entity.hotel;
+package com.project.airbnb.entity.hotel.hotelminprice;
 
+import com.project.airbnb.entity.hotel.Hotel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,10 @@ public class HotelMinPrice {
     @Column(nullable = false)
     private LocalDate date;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id",  nullable = false)
+    private Hotel hotel;
+
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
@@ -36,4 +41,8 @@ public class HotelMinPrice {
     @UpdateTimestamp
     private LocalDateTime updateDate;
 
+    public HotelMinPrice(Hotel hotel, LocalDate date) {
+        this.hotel = hotel;
+        this.date = date;
+    }
 }

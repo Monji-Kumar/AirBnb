@@ -28,4 +28,9 @@ public class HotelBookingController {
     public ResponseEntity<?> addGuests(@PathVariable("bookingId") long bookingId, @RequestBody List<GuestDto> guestList) {
         return ResponseEntity.ok(bookingService.addGuests(bookingId, guestList));
     }
+
+//    @PostMapping(value = "/{bookingId}/intiate-payment")
+//    public ResponseEntity<?> addBooking(@PathVariable(name = "bookingId") Long bookingId, ) {
+//        return ResponseEntity.ok(bookingService.initiatePayment(bookingId,)
+//    }
 }
